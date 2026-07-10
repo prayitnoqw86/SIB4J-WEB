@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BENUO SMART — Superapps Pemkab Penajam Paser Utara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0F766E; --green-deep:#0A5248; --green-soft:#E6F2F0;
+    --gold:#D99A2B; --gold-soft:#FBF1DC;
+    --ink:#12211D; --muted:#5B6B66; --line:#E4EAE8;
+    --paper:#F5F8F7; --card:#FFFFFF;
+    --c-admin:#2563EB; --c-publik:#16A34A; --c-pajak:#EA580C;
+    --c-info:#7C3AED; --c-smart:#0891B2; --c-profil:#DB2777; --c-lain:#475569;
+    --radius:18px; --shadow:0 1px 2px rgba(16,40,34,.06),0 8px 24px rgba(16,40,34,.06);
+    --shadow-lg:0 12px 40px rgba(16,40,34,.14);
+    --app-max:480px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+    background:#DDE6E3;color:var(--ink);line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  img{max-width:100%;display:block}
+
+  /* ---------- APP SHELL (phone-like column) ---------- */
+  .shell{
+    max-width:var(--app-max);margin:0 auto;min-height:100vh;background:var(--paper);
+    position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.12);
+  }
+  @media(min-width:1024px){
+    body{display:flex;align-items:flex-start;justify-content:center;padding:0}
+    .shell{margin:0}
+  }
+
+  /* ---------- HEADER ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-deep) 100%);
+    color:#fff;padding:14px 18px 20px;
+  }
+  .topbar .row{display:flex;align-items:center;gap:12px}
+  .seal{
+    width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);
+    display:grid;place-items:center;flex:none;border:1px solid rgba(255,255,255,.25);
+    backdrop-filter:blur(4px);
+  }
+  .brand-name{font-weight:800;font-size:16px;letter-spacing:.3px;line-height:1.1}
+  .brand-sub{font-size:11px;opacity:.85;font-weight:500}
+  .top-actions{margin-left:auto;display:flex;gap:8px}
+  .icon-btn{
+    width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);
+    display:grid;place-items:center;color:#fff;position:relative;
+    border:1px solid rgba(255,255,255,.14);transition:.15s;
+  }
+  .icon-btn:active{transform:scale(.92)}
+  .badge-dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;
+    background:var(--gold);border:2px solid var(--green-deep)}
+  .searchbar{
+    margin-top:16px;background:#fff;border-radius:14px;padding:11px 14px;
+    display:flex;align-items:center;gap:10px;color:var(--muted);
+    box-shadow:0 6px 18px rgba(10,82,72,.18);
+  }
+  .searchbar input{border:none;outline:none;flex:1;font-family:inherit;font-size:14px;color:var(--ink);background:none}
+
+  /* ---------- SECTIONS ---------- */
+  .view{padding:18px 18px 108px;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 12px}
+  .sec-title{font-size:15px;font-weight:800}
+  .sec-link{font-size:12.5px;color:var(--green);font-weight:700}
+
+  /* ---------- HERO GREETING ---------- */
+  .hero{
+    margin-top:-6px;background:var(--card);border-radius:var(--radius);
+    padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;
+  }
+  .avatar{width:46px;height:46px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,var(--gold),#B9781A);color:#fff;
+    display:grid;place-items:center;font-weight:800;font-size:18px}
+  .hero h2{margin:0;font-size:15px}
+  .hero p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+  .weather{margin-left:auto;text-align:right;flex:none}
+  .weather b{font-size:18px;font-weight:800}
+  .weather span{display:block;font-size:11px;color:var(--muted)}
+
+  /* ---------- QUICK STATS strip ---------- */
+  .strip{display:flex;gap:10px;margin-top:14px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .strip::-webkit-scrollbar{display:none}
+  .pill{flex:none;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:10px 13px;font-size:12px;font-weight:600;color:var(--muted);display:flex;gap:8px;align-items:center}
+  .pill b{color:var(--ink);font-weight:800}
+
+  /* ---------- CATEGORY GRID (7 layanan utama) ---------- */
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 6px}
+  .cat{background:none;text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 2px}
+  .cat .ic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+    color:#fff;box-shadow:0 6px 16px rgba(16,40,34,.12);transition:.15s}
+  .cat:active .ic{transform:translateY(2px) scale(.96)}
+  .cat span{font-size:11px;font-weight:600;color:var(--ink);line-height:1.2}
+
+  /* ---------- POPULAR services ---------- */
+  .pop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pop{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:10px;text-align:left;transition:.15s;border:1px solid var(--line)}
+  .pop:active{transform:scale(.98)}
+  .pop .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff}
+  .pop b{font-size:13px}
+  .pop small{font-size:11px;color:var(--muted)}
+
+  /* ---------- NEWS ---------- */
+  .news{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+    display:flex;margin-bottom:12px;border:1px solid var(--line);text-align:left}
+  .news .thumb{width:96px;flex:none;background:linear-gradient(135deg,var(--green-soft),#D4E8E4);
+    display:grid;place-items:center;color:var(--green)}
+  .news .body{padding:12px 14px}
+  .news .tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--gold)}
+  .news h4{margin:4px 0 4px;font-size:13.5px;line-height:1.3}
+  .news small{font-size:11px;color:var(--muted)}
+
+  /* ---------- BANNER ---------- */
+  .banner{margin-top:14px;border-radius:var(--radius);padding:18px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(120deg,var(--gold) 0%,#C07C15 100%)}
+  .banner h3{margin:0 0 4px;font-size:15px}
+  .banner p{margin:0;font-size:12px;opacity:.92;max-width:80%}
+  .banner .deco{position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;
+    background:rgba(255,255,255,.14)}
+  .banner .deco2{position:absolute;right:30px;bottom:-40px;width:90px;height:90px;border-radius:50%;
+    background:rgba(255,255,255,.1)}
+
+  /* ---------- SUBPAGE HEADER ---------- */
+  .subhead{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--line);
+    padding:14px 16px;display:flex;align-items:center;gap:12px}
+  .subhead .back{width:38px;height:38px;border-radius:11px;background:var(--green-soft);color:var(--green);
+    display:grid;place-items:center;flex:none}
+  .subhead h1{margin:0;font-size:16px;font-weight:800}
+  .subhead p{margin:0;font-size:11.5px;color:var(--muted)}
+
+  /* ---------- SERVICE GROUP LIST ---------- */
+  .group{margin-top:20px}
+  .group-h{display:flex;align-items:center;gap:10px;margin:0 2px 10px}
+  .group-h .gi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff}
+  .group-h b{font-size:14px}
+  .svc-list{display:flex;flex-direction:column;gap:8px}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;
+    display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);transition:.15s;text-align:left;width:100%}
+  .svc:active{transform:scale(.99);background:#FAFDFC}
+  .svc .si{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;color:#fff}
+  .svc .txt{flex:1}
+  .svc .txt b{font-size:13.5px;display:block}
+  .svc .txt small{font-size:11.5px;color:var(--muted)}
+  .svc .chev{color:var(--muted)}
+  .tagchip{font-size:9.5px;font-weight:800;padding:3px 7px;border-radius:20px;background:var(--green-soft);color:var(--green);text-transform:uppercase;letter-spacing:.4px}
+
+  /* ---------- DETAIL / FORM ---------- */
+  .detail-hero{border-radius:var(--radius);padding:20px;color:#fff;margin-bottom:16px;box-shadow:var(--shadow)}
+  .detail-hero .di{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center;margin-bottom:12px}
+  .detail-hero h2{margin:0 0 4px;font-size:19px}
+  .detail-hero p{margin:0;font-size:12.5px;opacity:.9}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px}
+  .field input,.field select,.field textarea{
+    width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
+    font-family:inherit;font-size:14px;outline:none;background:var(--card);color:var(--ink);transition:.15s}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  .steps{display:flex;gap:6px;margin-bottom:18px}
+  .step{flex:1;height:5px;border-radius:20px;background:var(--line)}
+  .step.on{background:var(--green)}
+  .card-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+  .info-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .info-row:last-child{border:none}
+  .info-row span{color:var(--muted)}
+  .info-row b{font-weight:700}
+  .btn{display:block;width:100%;padding:15px;border-radius:14px;font-weight:800;font-size:14.5px;text-align:center;transition:.15s}
+  .btn-primary{background:var(--green);color:#fff;box-shadow:0 8px 20px rgba(15,118,110,.3)}
+  .btn-primary:active{transform:scale(.98)}
+  .btn-gold{background:var(--gold);color:#fff}
+  .btn-ghost{background:var(--green-soft);color:var(--green)}
+  .notice{background:var(--gold-soft);border:1px solid #EBD9A8;border-radius:12px;padding:12px 14px;font-size:12px;color:#8A6414;display:flex;gap:10px}
+
+  /* ---------- STATUS / TRACKING ---------- */
+  .timeline{position:relative;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .tl-item{position:relative;padding-bottom:20px}
+  .tl-item::before{content:"";position:absolute;left:-21px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--line)}
+  .tl-item.done::before{background:var(--green);border-color:var(--green)}
+  .tl-item.now::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+  .tl-item b{font-size:13.5px}
+  .tl-item small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+
+  /* ---------- CCTV grid ---------- */
+  .cctv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cctv{border-radius:14px;overflow:hidden;background:#101a17;aspect-ratio:4/3;position:relative;box-shadow:var(--shadow)}
+  .cctv .live{position:absolute;top:8px;left:8px;background:#DC2626;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;display:flex;align-items:center;gap:4px}
+  .cctv .live::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .cctv .lbl{position:absolute;bottom:0;left:0;right:0;padding:18px 10px 8px;color:#fff;font-size:11px;font-weight:600;
+    background:linear-gradient(transparent,rgba(0,0,0,.7))}
+  .cctv .scan{position:absolute;inset:0;display:grid;place-items:center;color:#3a5650}
+
+  /* ---------- PROFILE ---------- */
+  .prof-hero{background:linear-gradient(135deg,var(--green),var(--green-deep));border-radius:var(--radius);
+    padding:22px;color:#fff;text-align:center;box-shadow:var(--shadow);margin-bottom:16px}
+  .prof-hero .pa{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto 12px;
+    display:grid;place-items:center;font-size:30px;font-weight:800;border:3px solid rgba(255,255,255,.35)}
+  .prof-hero h2{margin:0;font-size:18px}
+  .prof-hero p{margin:3px 0 0;font-size:12px;opacity:.85}
+  .verified{display:inline-flex;align-items:center;gap:5px;margin-top:10px;background:rgba(255,255,255,.18);
+    padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+  .menu-list{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+  .menu-item{display:flex;align-items:center;gap:13px;padding:15px 16px;border-bottom:1px solid var(--line);width:100%;text-align:left;transition:.15s}
+  .menu-item:last-child{border:none}
+  .menu-item:active{background:#FAFDFC}
+  .menu-item .mi{width:36px;height:36px;border-radius:10px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;flex:none}
+  .menu-item b{font-size:13.5px;flex:1}
+
+  /* ---------- NOTIF ---------- */
+  .notif{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;gap:12px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .notif.unread{border-left:3px solid var(--green)}
+  .notif .ni{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none}
+  .notif b{font-size:13px}
+  .notif p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  .notif small{font-size:10.5px;color:var(--muted);margin-top:4px;display:block}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .botnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:var(--app-max);
+    background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+    display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:50}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10px;font-weight:600;padding:4px 0}
+  .nav-item.active{color:var(--green)}
+  .nav-item .ni{transition:.15s}
+  .nav-item.active .ni{transform:translateY(-1px)}
+  .nav-center{flex:1;display:flex;justify-content:center}
+  .nav-center button{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#B9781A);
+    color:#fff;display:grid;place-items:center;margin-top:-22px;box-shadow:0 8px 20px rgba(217,154,43,.4);border:4px solid var(--paper)}
+
+  /* ---------- misc ---------- */
+  .footer-note{text-align:center;font-size:10.5px;color:var(--muted);margin-top:28px;line-height:1.6}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted)}
+  .empty svg{margin-bottom:12px;opacity:.5}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+    padding:12px 20px;border-radius:30px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:100;max-width:88%}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div id="header"></div>
+  <div id="app"></div>
+  <nav class="botnav" id="botnav"></nav>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   BENUO SMART — data model (dari sitemap PPU)
+========================================================= */
+const ICONS = {
+  home:'M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z',
+  search:'M11 4a7 7 0 1 0 4.9 12L20 20M11 4a7 7 0 0 1 0 14',
+  bell:'M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 21h4',
+  user:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M5 20a7 7 0 0 1 14 0',
+  doc:'M6 2h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM14 2v4h4',
+  people:'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M2 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M16 20a6 6 0 0 1 6 0',
+  card:'M2 7h20v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zM2 10h20M6 15h4',
+  info:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 8h.01M11 12h1v4h1',
+  city:'M4 21V8l6-4v17M10 21V4l8 3v14M4 21h16M8 11h.01M8 15h.01M14 11h.01M14 15h.01',
+  dots:'M5 12h.01M12 12h.01M19 12h.01',
+  chev:'M9 6l6 6-6 6',
+  back:'M15 6l-6 6 6 6',
+  id:'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 11a2 2 0 1 0 0-4M6 16a3 3 0 0 1 6 0M15 10h4M15 14h4',
+  heart:'M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9z',
+  cap:'M12 4L2 9l10 5 8-4v6M6 12v4c0 1 3 3 6 3s6-2 6-3v-4',
+  bus:'M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9H4zM4 15v3M20 15v3M7 19h.01M17 19h.01M4 10h16',
+  hand:'M8 13V5a1.5 1.5 0 0 1 3 0v6M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-6 6H9a5 5 0 0 1-5-5v-1l1.5-2',
+  cash:'M2 6h20v12H2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6M5 9v.01M19 15v.01',
+  drop:'M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z',
+  clock:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 8v4l3 2',
+  news:'M4 4h16v16a0 0 0 0 1 0 0H6a2 2 0 0 1-2-2zM8 8h8M8 12h8M8 16h5',
+  calendar:'M4 5h16v15H4zM4 9h16M8 3v4M16 3v4',
+  mega:'M3 11v2l12 5V6zM3 11H2v2h1M15 8a3 3 0 0 1 0 8',
+  chart:'M4 20V10M10 20V4M16 20v-8M4 20h16',
+  cam:'M4 8h3l2-2h6l2 2h3v11H4zM12 16a3.5 3.5 0 1 0 0-7',
+  folder:'M3 6a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z',
+  gear:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-4l-.3 2.9a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L4.1 11a7 7 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.9h4l.3-2.9a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.6a7 7 0 0 0 .1-1z',
+  about:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 8h.01M11 12h1v4h1',
+  faq:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01',
+  phone:'M5 3h3l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z',
+  help:'M18 8a6 6 0 0 0-12 0v5a3 3 0 0 0 3 3M6 13H4v3a2 2 0 0 0 2 2M18 13h2v3a2 2 0 0 0-2 2h-3',
+  check:'M20 6L9 17l-5-5',
+  building:'M3 21V6l7-3v18M10 21V8l8 3v10M3 21h18M6 11h.01M6 15h.01M14 14h.01M14 17h.01',
+  wallet:'M3 6h16a1 1 0 0 1 1 1v3h-4a2 2 0 0 0 0 4h4v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM17 12h.01',
+  shield:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z',
+  pin:'M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11zM12 12a2 2 0 1 0 0-4',
+};
+function icon(name,size=22,stroke=2){
+  const d=ICONS[name]||ICONS.dots;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${d.split('M').filter(Boolean).map(p=>`<path d="M${p}"/>`).join('')}</svg>`;
+}
+
+const CATS = [
+  { id:'administrasi', title:'Layanan\nAdministrasi', short:'Administrasi', icon:'doc', color:'var(--c-admin)', desc:'Kependudukan, perizinan & tracking pengajuan',
+    groups:[
+      { name:'Administrasi Kependudukan', icon:'id', color:'var(--c-admin)', items:[
+        ['KTP','Cetak & aktivasi KTP-el','id'],['KK','Kartu Keluarga digital','folder'],
+        ['Akta Kelahiran','Pengurusan akta baru','doc'],['Pindah Domisili','Surat pindah antar wilayah','pin']]},
+      { name:'Perizinan', icon:'shield', color:'#3B82F6', items:[
+        ['Izin Usaha','NIB & izin usaha mikro','building'],['IMB / PBG','Persetujuan Bangunan Gedung','building'],
+        ['Izin Konstruksi','Izin pekerjaan konstruksi','building'],['Izin Reklame','Pemasangan reklame & spanduk','mega'],
+        ['Surat Domisili','Surat keterangan domisili','doc']]},
+      { name:'Status & Tracking Pengajuan', icon:'clock', color:'#60A5FA', track:true, items:[] },
+    ]},
+  { id:'publik', title:'Layanan\nPublik', short:'Publik', icon:'people', color:'var(--c-publik)', desc:'Kesehatan, pendidikan, transportasi & bantuan sosial',
+    groups:[
+      { name:'Kesehatan', icon:'heart', color:'#EF4444', items:[
+        ['Daftar RS / Puskesmas','Cari & lihat fasilitas kesehatan','heart'],['Booking Layanan','Antrean online poli & dokter','calendar'],
+        ['Informasi BPJS','Cek kepesertaan & tagihan','shield']]},
+      { name:'Pendidikan', icon:'cap', color:'#16A34A', items:[
+        ['PPDB','Penerimaan Peserta Didik Baru','cap'],['Data Sekolah','Direktori sekolah PPU','building'],
+        ['Beasiswa','Program beasiswa daerah','cap']]},
+      { name:'Transportasi & Perhubungan', icon:'bus', color:'#22C55E', items:[
+        ['Uji KIR','Jadwal uji kendaraan','bus'],['Parkir','Langganan e-parkir','card'],
+        ['Angkutan Umum','Rute & jadwal angkutan','bus']]},
+      { name:'Sosial & Bantuan', icon:'hand', color:'#15803D', items:[
+        ['Bansos','Bantuan sosial daerah','hand'],['BPJS','BPJS Kesehatan & Ketenagakerjaan','shield'],
+        ['Disabilitas','Layanan ramah disabilitas','people']]},
+    ]},
+  { id:'pajak', title:'Pembayaran\n& Pajak', short:'Bayar', icon:'card', color:'var(--c-pajak)', desc:'Pajak daerah, tagihan PDAM & riwayat transaksi',
+    groups:[
+      { name:'Pajak Daerah', icon:'cash', color:'#EA580C', items:[
+        ['PBB','Pajak Bumi & Bangunan','cash'],['Pajak Kendaraan','Info & bantuan pembayaran','bus'],
+        ['Retribusi','Retribusi daerah','card']]},
+      { name:'Tagihan', icon:'drop', color:'#F97316', items:[
+        ['Air (PDAM)','Tagihan Perumda Air Minum','drop']]},
+      { name:'Riwayat Transaksi', icon:'clock', color:'#FB923C', history:true, items:[] },
+    ]},
+  { id:'informasi', title:'Informasi\nDaerah', short:'Info', icon:'info', color:'var(--c-info)', desc:'Berita, agenda, pengumuman & statistik daerah',
+    groups:[
+      { name:'Kanal Informasi', icon:'news', color:'#7C3AED', items:[
+        ['Berita','Kabar terkini Kabupaten PPU','news'],['Event / Agenda','Agenda & kegiatan daerah','calendar'],
+        ['Pengumuman','Pengumuman resmi Pemkab','mega'],['Statistik Daerah','Data & indikator daerah','chart']]},
+    ]},
+  { id:'smartcity', title:'Smart City\nFeatures', short:'Smart', icon:'city', color:'var(--c-smart)', desc:'Pemantauan kota berbasis CCTV',
+    groups:[
+      { name:'Fitur Smart City', icon:'cam', color:'#0891B2', items:[
+        ['CCTV Kota','Pantau titik strategis secara live','cam']]},
+    ]},
+  { id:'profil', title:'Profil\nPengguna', short:'Profil', icon:'user', color:'var(--c-profil)', desc:'Data diri, dokumen digital & pengaturan',
+    groups:[
+      { name:'Akun Saya', icon:'user', color:'#DB2777', items:[
+        ['Data Diri','Kelola informasi pribadi','user'],['Dokumen Digital','Dompet dokumen resmi','folder'],
+        ['Notifikasi','Pengaturan pemberitahuan','bell'],['Pengaturan','Preferensi aplikasi','gear']]},
+    ]},
+  { id:'lainnya', title:'Lainnya', short:'Lainnya', icon:'dots', color:'var(--c-lain)', desc:'Tentang, FAQ, kontak & bantuan',
+    groups:[
+      { name:'Pusat Bantuan', icon:'help', color:'#475569', items:[
+        ['Tentang Kami','Profil aplikasi & Pemkab PPU','about'],['FAQ','Pertanyaan yang sering diajukan','faq'],
+        ['Kontak','Hubungi instansi terkait','phone'],['Bantuan','Panduan penggunaan','help']]},
+    ]},
+];
+
+const NEWS = [
+  ['PEMBANGUNAN','PPU Percepat Infrastruktur Penyangga IKN Nusantara','2 jam lalu','building'],
+  ['LAYANAN','Mal Pelayanan Publik Penajam Layani 120+ Jenis Perizinan','Kemarin','doc'],
+  ['KESEHATAN','Vaksinasi & Cek Kesehatan Gratis di Puskesmas Se-PPU','2 hari lalu','heart'],
+  ['PENDIDIKAN','PPDB Online 2026/2027 Dibuka untuk Jenjang SD & SMP','3 hari lalu','cap'],
+];
+
+const POPULAR = [
+  ['KTP','Cetak KTP-el','id','var(--c-admin)','administrasi/KTP'],
+  ['PBB','Bayar pajak','cash','var(--c-pajak)','pajak/PBB'],
+  ['Booking Layanan','Antre RS online','calendar','var(--c-publik)','publik/Booking Layanan'],
+  ['Air (PDAM)','Tagihan air','drop','var(--c-pajak)','pajak/Air (PDAM)'],
+  ['CCTV Kota','Pantau kota','cam','var(--c-smart)','smartcity/CCTV Kota'],
+  ['Bansos','Cek bantuan','hand','var(--c-publik)','publik/Bansos'],
+];
+
+/* =========================================================
+   ROUTER
+========================================================= */
+function go(hash){ location.hash = hash; }
+function currentRoute(){
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/,''));
+  return h ? h.split('/') : ['home'];
+}
+window.addEventListener('hashchange', render);
+window.addEventListener('load', render);
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* =========================================================
+   RENDER
+========================================================= */
+function render(){
+  const r = currentRoute();
+  const app = document.getElementById('app');
+  const header = document.getElementById('header');
+  window.scrollTo(0,0);
+
+  if(r[0]==='home'||r[0]===''){ header.innerHTML=mainHeader(); app.innerHTML=viewHome(); }
+  else if(r[0]==='cari'){ header.innerHTML=mainHeader(); app.innerHTML=viewSearch(r[1]||''); }
+  else if(r[0]==='notif'){ header.innerHTML=subHeader('Notifikasi','Pemberitahuan terbaru untuk Anda'); app.innerHTML=viewNotif(); }
+  else if(r[0]==='profil-me'){ header.innerHTML=subHeader('Profil Pengguna','Akun & dokumen digital Anda'); app.innerHTML=viewProfile(); }
+  else if(r[0]==='cat'){ const c=CATS.find(x=>x.id===r[1]); header.innerHTML=subHeader(c.title.replace('\n',' '),c.desc); app.innerHTML=viewCategory(c); }
+  else if(r[0]==='svc'){ const c=CATS.find(x=>x.id===r[1]); header.innerHTML=subHeader(r[2],'Layanan '+c.title.replace('\n',' ')); app.innerHTML=viewService(c,r[2]); }
+  else { header.innerHTML=subHeader('Halaman','Tidak ditemukan'); app.innerHTML=`<div class="view"><div class="empty">${icon('search',40)}<p>Halaman tidak ditemukan.</p></div></div>`; }
+
+  document.getElementById('botnav').innerHTML = bottomNav(r);
+}
+
+/* ---------- Headers ---------- */
+function mainHeader(){
+  const hour = new Date().getHours();
+  return `
+  <header class="topbar">
+    <div class="row">
+      <div class="seal">${icon('shield',22)}</div>
+      <div>
+        <div class="brand-name">BENUO SMART</div>
+        <div class="brand-sub">Pemkab Penajam Paser Utara</div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" onclick="go('/notif')">${icon('bell',20)}<span class="badge-dot"></span></button>
+        <button class="icon-btn" onclick="go('/profil-me')">${icon('user',20)}</button>
+      </div>
+    </div>
+    <div class="searchbar" onclick="go('/cari')">
+      ${icon('search',18)}
+      <input placeholder="Cari layanan, mis. KTP, PBB, Puskesmas..." readonly>
+    </div>
+  </header>`;
+}
+function subHeader(title,sub){
+  return `
+  <header class="subhead">
+    <button class="back" onclick="history.back()">${icon('back',20)}</button>
+    <div><h1>${title}</h1><p>${sub||''}</p></div>
+  </header>`;
+}
+
+/* ---------- HOME ---------- */
+function viewHome(){
+  const hour=new Date().getHours();
+  const greet = hour<11?'Selamat pagi':hour<15?'Selamat siang':hour<18?'Selamat sore':'Selamat malam';
+  return `<div class="view">
+    <div class="hero">
+      <div class="avatar">RA</div>
+      <div>
+        <h2>${greet}, Rahmat 👋</h2>
+        <p>Ada layanan apa yang bisa kami bantu hari ini?</p>
+      </div>
+      <div class="weather">
+        <b>31°</b><span>Penajam · Cerah</span>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="pill">${icon('shield',15)} Akun <b>Terverifikasi</b></div>
+      <div class="pill">${icon('folder',15)} <b>8</b> Dokumen</div>
+      <div class="pill">${icon('clock',15)} <b>2</b> Diproses</div>
+      <div class="pill">${icon('cash',15)} <b>1</b> Tagihan</div>
+    </div>
+
+    <div class="sec-head"><div class="sec-title">Layanan Utama</div></div>
+    <div class="cat-grid">
+      ${CATS.map(c=>`
+        <button class="cat" onclick="go('/cat/${c.id}')">
+          <div class="ic" style="background:${c.color}">${icon(c.icon,26)}</div>
+          <span>${c.short}</span>
+        </button>`).join('')}
+      <button class="cat" onclick="go('/cari')">
+        <div class="ic" style="background:var(--green)">${icon('search',26)}</div>
+        <span>Cari</span>
+      </button>
+    </div>
+
+    <div class="banner">
+      <div class="deco"></div><div class="deco2"></div>
+      <h3>Satu Aplikasi, Semua Layanan</h3>
+      <p>Layanan publik Kabupaten Penajam Paser Utara kini terintegrasi, cepat, dan mudah dalam satu genggaman.</p>
+    </div>
+
+    <div class="sec-head"><div class="sec-title">Sering Digunakan</div><div class="sec-link" onclick="go('/cat/administrasi')">Lihat semua</div></div>
+    <div class="pop-grid">
+      ${POPULAR.map(p=>`
+        <button class="pop" onclick="go('/svc/${p[4].split('/')[0]}/${encodeURIComponent(p[0])}')">
+          <div class="ic" style="background:${p[3]}">${icon(p[2],20)}</div>
+          <div><b>${p[0]}</b><br><small>${p[1]}</small></div>
+        </button>`).join('')}
+    </div>
+
+    <div class="sec-head"><div class="sec-title">Informasi Daerah</div><div class="sec-link" onclick="go('/cat/informasi')">Selengkapnya</div></div>
+    ${NEWS.map(n=>`
+      <button class="news" onclick="toast('Membuka berita...')">
+        <div class="thumb">${icon(n[3],30)}</div>
+        <div class="body">
+          <div class="tag">${n[0]}</div>
+          <h4>${n[1]}</h4>
+          <small>${icon('clock',11)} ${n[2]}</small>
+        </div>
+      </button>`).join('')}
+
+    <div class="footer-note">
+      <b>BENUO SMART</b> — Superapps Pemerintah Kabupaten Penajam Paser Utara<br>
+      Benuo Taka · Prototype v1.0 · © 2026 Diskominfo PPU
+    </div>
+  </div>`;
+}
+
+/* ---------- CATEGORY ---------- */
+function viewCategory(c){
+  return `<div class="view">
+    <div class="detail-hero" style="background:linear-gradient(135deg,${c.color},${shade(c.color)})">
+      <div class="di">${icon(c.icon,28)}</div>
+      <h2>${c.title.replace('\n',' ')}</h2>
+      <p>${c.desc}</p>
+    </div>
+    ${c.groups.map(g=>`
+      <div class="group">
+        <div class="group-h">
+          <div class="gi" style="background:${g.color}">${icon(g.icon,18)}</div>
+          <b>${g.name}</b>
+        </div>
+        ${g.track?trackingBlock():g.history?historyBlock():`
+        <div class="svc-list">
+          ${g.items.map(it=>`
+            <button class="svc" onclick="go('/svc/${c.id}/${encodeURIComponent(it[0])}')">
+              <div class="si" style="background:${g.color}">${icon(it[2],20)}</div>
+              <div class="txt"><b>${it[0]}</b><small>${it[1]}</small></div>
+              ${icon('chev',18,2)}
+            </button>`).join('')}
+        </div>`}
+      </div>`).join('')}
+  </div>`;
+}
+
+function trackingBlock(){
+  return `<div class="card-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><b style="font-size:13px">Permohonan Akta Kelahiran</b><br><small style="color:var(--muted);font-size:11px">No. PPU-2026-004821</small></div>
+      <span class="tagchip" style="background:var(--gold-soft);color:#8A6414">Diproses</span>
+    </div>
+    <div class="timeline">
+      <div class="tl-item done"><b>Permohonan diterima</b><small>04 Jul 2026 · 09:12</small></div>
+      <div class="tl-item done"><b>Verifikasi berkas</b><small>04 Jul 2026 · 14:30 · Disdukcapil PPU</small></div>
+      <div class="tl-item now"><b>Proses pencetakan</b><small>Sedang berlangsung · estimasi 1 hari kerja</small></div>
+      <div class="tl-item"><b>Dokumen siap diambil</b><small>Menunggu</small></div>
+    </div>
+  </div>`;
+}
+function historyBlock(){
+  const rows=[['PBB 2026','04 Jul 2026','Rp 342.000','Berhasil'],['Tagihan PDAM','01 Jul 2026','Rp 128.500','Berhasil'],['Retribusi Pasar','28 Jun 2026','Rp 50.000','Berhasil']];
+  return `<div class="card-box" style="padding:6px 16px">
+    ${rows.map(x=>`<div class="info-row"><div><b>${x[0]}</b><br><span style="font-size:11px">${x[1]}</span></div>
+      <div style="text-align:right"><b>${x[2]}</b><br><span style="font-size:11px;color:var(--c-publik)">✓ ${x[3]}</span></div></div>`).join('')}
+  </div>`;
+}
+
+/* ---------- SERVICE DETAIL (dynamic) ---------- */
+function findService(cid,name){
+  const c=CATS.find(x=>x.id===cid);
+  for(const g of c.groups){ const it=g.items.find(i=>i[0]===name); if(it) return {c,g,it}; }
+  return {c,g:c.groups[0],it:[name,'',c.icon]};
+}
+function viewService(c,name){
+  const {g,it}=findService(c.id,name);
+  const color=g.color;
+  const hero=(body)=>`<div class="view">
+    <div class="detail-hero" style="background:linear-gradient(135deg,${color},${shade(color)})">
+      <div class="di">${icon(it[2],26)}</div>
+      <h2>${name}</h2><p>${it[1]||'Layanan '+c.title.replace('\n',' ')}</p>
+    </div>${body}</div>`;
+
+  // Special-cased flows
+  if(name==='KTP') return hero(formKTP());
+  if(name==='Booking Layanan') return hero(formBooking());
+  if(name==='PBB') return hero(payPBB());
+  if(name==='Air (PDAM)') return hero(payPDAM());
+  if(name==='CCTV Kota') return hero(cctvView());
+  if(name==='Berita') return hero(newsList());
+  if(name==='Statistik Daerah') return hero(statsView());
+  if(name==='Daftar RS / Puskesmas') return hero(facilitiesView());
+  if(name==='Data Diri') return hero(dataDiri());
+  if(name==='Dokumen Digital') return hero(dokDigital());
+  if(name==='FAQ') return hero(faqView());
+  if(name==='Tentang Kami') return hero(aboutView());
+  if(name==='Kontak') return hero(kontakView());
+
+  // Generic service page
+  return hero(genericService(name,color));
+}
+
+function genericService(name,color){
+  return `
+    <div class="steps"><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+    <div class="notice">${icon('info',16)}<div>Lengkapi data di bawah untuk mengajukan <b>${name}</b>. Proses ini merupakan simulasi prototype.</div></div>
+    <div style="height:14px"></div>
+    <div class="field"><label>NIK</label><input placeholder="16 digit NIK Anda" inputmode="numeric"></div>
+    <div class="field"><label>Nama Lengkap</label><input placeholder="Sesuai KTP"></div>
+    <div class="field"><label>Kecamatan</label>
+      <select><option>Penajam</option><option>Waru</option><option>Babulu</option><option>Sepaku</option></select></div>
+    <div class="field"><label>Keperluan</label><textarea rows="3" placeholder="Jelaskan keperluan pengajuan..."></textarea></div>
+    <div class="card-box">
+      <div class="info-row"><span>Estimasi selesai</span><b>3 hari kerja</b></div>
+      <div class="info-row"><span>Biaya</span><b style="color:var(--c-publik)">Gratis</b></div>
+      <div class="info-row"><span>Instansi</span><b>DPMPTSP PPU</b></div>
+    </div>
+    <button class="btn btn-primary" onclick="toast('Pengajuan ${name} terkirim ✓')">Ajukan Sekarang</button>`;
+}
+
+function formKTP(){
+  return `
+    <div class="steps"><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+    <div class="svc-list" style="margin-bottom:16px">
+      <button class="svc" onclick="toast('Membuka layanan cetak KTP-el')"><div class="si" style="background:var(--c-admin)">${icon('id',20)}</div><div class="txt"><b>Cetak Ulang KTP-el</b><small>KTP hilang / rusak</small></div>${icon('chev',18)}</button>
+      <button class="svc" onclick="toast('Membuka aktivasi KTP')"><div class="si" style="background:var(--c-admin)">${icon('check',20)}</div><div class="txt"><b>Aktivasi KTP-el Baru</b><small>Wajib KTP pemula</small></div>${icon('chev',18)}</button>
+      <button class="svc" onclick="toast('Membuka perubahan data')"><div class="si" style="background:var(--c-admin)">${icon('doc',20)}</div><div class="txt"><b>Perubahan Data</b><small>Alamat, status, dll.</small></div>${icon('chev',18)}</button>
+    </div>
+    <div class="notice">${icon('info',16)}<div>Anda akan diarahkan mengisi NIK & mengunggah dokumen pendukung sesuai jenis layanan.</div></div>
+    <div style="height:14px"></div>
+    <div class="field"><label>NIK</label><input placeholder="Masukkan 16 digit NIK" inputmode="numeric" value="6409xxxxxxxxxxxx"></div>
+    <div class="field"><label>Jenis Layanan</label><select><option>Cetak Ulang KTP-el</option><option>Aktivasi KTP-el Baru</option><option>Perubahan Data</option></select></div>
+    <button class="btn btn-primary" onclick="toast('Permohonan KTP diproses ✓')">Lanjutkan</button>`;
+}
+
+function formBooking(){
+  const fac=['RSUD Ratu Aji Putri Botung','Puskesmas Penajam','Puskesmas Petung','Puskesmas Waru','Puskesmas Babulu','Puskesmas Sepaku I'];
+  return `
+    <div class="field"><label>Fasilitas Kesehatan</label><select>${fac.map(f=>`<option>${f}</option>`).join('')}</select></div>
+    <div class="field"><label>Poli / Layanan</label><select><option>Poli Umum</option><option>Poli Gigi</option><option>Poli Anak (KIA)</option><option>Poli Penyakit Dalam</option><option>Laboratorium</option></select></div>
+    <div class="field"><label>Tanggal Kunjungan</label><input type="date" value="2026-07-08"></div>
+    <div class="card-box">
+      <b style="font-size:13px">Estimasi Antrean</b>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+        <div style="width:64px;height:64px;border-radius:16px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:26px;font-weight:800">A-14</div>
+        <div><small style="color:var(--muted)">Nomor Anda</small><br><b>Perkiraan dipanggil 09:40 WITA</b><br><small style="color:var(--muted)">13 orang di depan Anda</small></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="toast('Antrean berhasil dibooking ✓')">Ambil Antrean</button>`;
+}
+
+function payPBB(){
+  return `
+    <div class="field"><label>Nomor Objek Pajak (NOP)</label><input placeholder="18 digit NOP" value="64.09.xxx.xxx.xxx-xxxx.x"></div>
+    <button class="btn btn-ghost" onclick="toast('Tagihan ditemukan')" style="margin-bottom:16px">Cek Tagihan</button>
+    <div class="card-box">
+      <div class="info-row"><span>Nama WP</span><b>Rahmat Alamsyah</b></div>
+      <div class="info-row"><span>Letak Objek</span><b>Nipah-nipah, Penajam</b></div>
+      <div class="info-row"><span>Tahun Pajak</span><b>2026</b></div>
+      <div class="info-row"><span>PBB Terutang</span><b>Rp 320.000</b></div>
+      <div class="info-row"><span>Denda</span><b>Rp 22.000</b></div>
+      <div class="info-row"><span>Total Bayar</span><b style="color:var(--c-pajak);font-size:16px">Rp 342.000</b></div>
+    </div>
+    <div class="field"><label>Metode Pembayaran</label><select><option>Virtual Account Bankaltimtara</option><option>QRIS</option><option>e-Wallet</option><option>Kartu Debit/Kredit</option></select></div>
+    <button class="btn btn-gold" onclick="toast('Pembayaran PBB berhasil ✓')">Bayar Rp 342.000</button>`;
+}
+
+function payPDAM(){
+  return `
+    <div class="field"><label>Nomor Sambungan Perumda Air</label><input placeholder="Nomor pelanggan" value="PPU-0084215"></div>
+    <div class="card-box">
+      <div class="info-row"><span>Pelanggan</span><b>Rahmat Alamsyah</b></div>
+      <div class="info-row"><span>Periode</span><b>Juni 2026</b></div>
+      <div class="info-row"><span>Pemakaian</span><b>17 m³</b></div>
+      <div class="info-row"><span>Total Tagihan</span><b style="color:var(--c-pajak);font-size:16px">Rp 128.500</b></div>
+    </div>
+    <button class="btn btn-gold" onclick="toast('Tagihan PDAM lunas ✓')">Bayar Sekarang</button>`;
+}
+
+function cctvView(){
+  const cams=['Simpang 4 Penajam','Pelabuhan Feri Penajam','Pasar Petung','Jl. Provinsi Waru','Kawasan Sepaku','Alun-alun Penajam'];
+  return `
+    <div class="notice">${icon('info',16)}<div>Pantauan CCTV titik strategis Kabupaten PPU. Cuplikan bersifat simulasi pada prototype ini.</div></div>
+    <div style="height:14px"></div>
+    <div class="cctv-grid">
+      ${cams.map(c=>`<div class="cctv"><span class="live">LIVE</span><div class="scan">${icon('cam',30)}</div><div class="lbl">${c}</div></div>`).join('')}
+    </div>`;
+}
+
+function newsList(){
+  return NEWS.map(n=>`
+    <button class="news" onclick="toast('Membuka berita...')" style="width:100%">
+      <div class="thumb">${icon(n[3],30)}</div>
+      <div class="body"><div class="tag">${n[0]}</div><h4>${n[1]}</h4><small>${icon('clock',11)} ${n[2]}</small></div>
+    </button>`).join('');
+}
+
+function statsView(){
+  const stats=[['Jumlah Penduduk','198.264 jiwa','people'],['Kecamatan','4','pin'],['Kelurahan/Desa','54','building'],['IPM 2025','72,4','chart'],['Puskesmas','11','heart'],['Sekolah','214','cap']];
+  return `<div class="pop-grid">${stats.map(s=>`
+    <div class="pop"><div class="ic" style="background:var(--c-info)">${icon(s[2],20)}</div>
+    <div><b style="font-size:18px">${s[1]}</b><br><small>${s[0]}</small></div></div>`).join('')}</div>
+    <div class="footer-note">Sumber data: simulasi prototype · gantikan dengan integrasi Satu Data PPU.</div>`;
+}
+
+function facilitiesView(){
+  const list=[['RSUD Ratu Aji Putri Botung','Jl. Provinsi KM 9, Nipah-nipah','Buka 24 jam'],['Puskesmas Penajam','Kel. Penajam','07.00–14.00'],['Puskesmas Petung','Kel. Petung','07.00–14.00'],['Puskesmas Waru','Kec. Waru','07.00–14.00'],['Puskesmas Sepaku I','Kec. Sepaku','07.00–14.00']];
+  return `<div class="svc-list">${list.map(f=>`
+    <button class="svc" onclick="toast('Melihat detail ${f[0]}')">
+      <div class="si" style="background:#EF4444">${icon('heart',20)}</div>
+      <div class="txt"><b>${f[0]}</b><small>${f[1]} · ${f[2]}</small></div>${icon('chev',18)}
+    </button>`).join('')}</div>`;
+}
+
+function dataDiri(){
+  const d=[['NIK','6409xxxxxxxxxxxx'],['Nama','Rahmat Alamsyah'],['Tempat/Tgl Lahir','Penajam, 12 Mei 1992'],['Alamat','Nipah-nipah, Kec. Penajam'],['Pekerjaan','Wiraswasta'],['No. HP','0812-xxxx-xxxx']];
+  return `<div class="card-box">${d.map(x=>`<div class="info-row"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div>
+    <button class="btn btn-ghost" onclick="toast('Membuka form ubah data')">Ubah Data Diri</button>`;
+}
+function dokDigital(){
+  const docs=[['KTP-el','id','Aktif'],['Kartu Keluarga','folder','Aktif'],['Akta Kelahiran','doc','Aktif'],['BPJS Kesehatan','shield','Aktif']];
+  return `<div class="svc-list">${docs.map(x=>`
+    <button class="svc" onclick="toast('Membuka ${x[0]}')"><div class="si" style="background:var(--c-profil)">${icon(x[1],20)}</div>
+    <div class="txt"><b>${x[0]}</b><small>Dokumen tervalidasi</small></div><span class="tagchip">${x[2]}</span></button>`).join('')}</div>`;
+}
+function faqView(){
+  const qs=[['Apa itu BENUO SMART?','Superapps resmi Pemkab Penajam Paser Utara yang menyatukan seluruh layanan publik OPD dalam satu platform.'],['Bagaimana cara verifikasi akun?','Masuk ke Profil › Data Diri, lengkapi NIK dan swafoto, lalu tunggu validasi Disdukcapil.'],['Apakah layanan berbayar?','Sebagian besar layanan administrasi gratis. Pajak & tagihan mengikuti tarif resmi daerah.'],['Layanan tidak muncul?','Pastikan aplikasi versi terbaru atau hubungi menu Bantuan.']];
+  return qs.map(q=>`<div class="card-box"><b style="font-size:13.5px">${q[0]}</b><p style="margin:8px 0 0;font-size:12.5px;color:var(--muted)">${q[1]}</p></div>`).join('');
+}
+function aboutView(){
+  return `<div class="card-box">
+    <b>BENUO SMART</b>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:8px">Superapps Pemerintah Kabupaten Penajam Paser Utara — mengintegrasikan layanan seluruh Organisasi Perangkat Daerah (OPD) dalam satu aplikasi. Terinspirasi semangat <b>"Benuo Taka"</b>, menghadirkan layanan publik yang terstruktur, cepat, dan terintegrasi menyambut peran PPU sebagai penyangga IKN Nusantara.</p>
+  </div>
+  <div class="card-box">
+    <div class="info-row"><span>Pengembang</span><b>Diskominfo PPU</b></div>
+    <div class="info-row"><span>Versi</span><b>1.0.0 (Prototype)</b></div>
+    <div class="info-row"><span>Wilayah</span><b>Kab. Penajam Paser Utara</b></div>
+  </div>`;
+}
+function kontakView(){
+  const k=[['Diskominfo PPU','phone','(0542) xxxxxxx'],['Mal Pelayanan Publik','building','Jl. Provinsi, Penajam'],['Call Center 24 Jam','phone','112'],['Email','about','info@penajamkab.go.id']];
+  return `<div class="svc-list">${k.map(x=>`<button class="svc" onclick="toast('${x[2]}')"><div class="si" style="background:var(--c-lain)">${icon(x[1],20)}</div><div class="txt"><b>${x[0]}</b><small>${x[2]}</small></div>${icon('chev',18)}</button>`).join('')}</div>`;
+}
+
+/* ---------- SEARCH ---------- */
+function allServices(){
+  const arr=[];
+  CATS.forEach(c=>c.groups.forEach(g=>g.items.forEach(it=>arr.push({cid:c.id,name:it[0],desc:it[1],ic:it[2],color:g.color}))));
+  return arr;
+}
+function viewSearch(q){
+  const all=allServices();
+  return `<div class="view">
+    <div class="field" style="margin-top:4px">
+      <input id="q" placeholder="Ketik nama layanan..." value="${q||''}" oninput="filterSvc(this.value)" autofocus>
+    </div>
+    <div class="sec-head"><div class="sec-title" id="qres">${q?'Hasil pencarian':'Semua layanan'}</div></div>
+    <div class="svc-list" id="qlist">
+      ${all.map(s=>svcRow(s)).join('')}
+    </div>
+  </div>`;
+}
+function svcRow(s){
+  return `<button class="svc" data-name="${s.name.toLowerCase()}" onclick="go('/svc/${s.cid}/${encodeURIComponent(s.name)}')">
+    <div class="si" style="background:${s.color}">${icon(s.ic,20)}</div>
+    <div class="txt"><b>${s.name}</b><small>${s.desc}</small></div>${icon('chev',18)}</button>`;
+}
+function filterSvc(v){
+  v=v.toLowerCase().trim();
+  const rows=document.querySelectorAll('#qlist .svc');
+  let n=0;
+  rows.forEach(r=>{ const m=r.dataset.name.includes(v); r.style.display=m?'':'none'; if(m)n++; });
+  document.getElementById('qres').textContent = v? (n+' hasil untuk "'+v+'"') : 'Semua layanan';
+}
+
+/* ---------- NOTIF ---------- */
+function viewNotif(){
+  const N=[['check','var(--c-publik)','Akta Kelahiran selesai','Dokumen Anda siap diambil di Disdukcapil PPU.','5 menit lalu',true],
+    ['cash','var(--c-pajak)','Tagihan PBB 2026','Jatuh tempo 31 Agustus 2026. Bayar sekarang untuk hindari denda.','2 jam lalu',true],
+    ['calendar','var(--c-info)','Pengingat Booking','Antrean Poli Umum Puskesmas Penajam besok pukul 09.40.','Kemarin',false],
+    ['mega','var(--c-info)','Pengumuman PPDB','Pendaftaran PPDB 2026/2027 dibuka mulai 10 Juli 2026.','2 hari lalu',false]];
+  return `<div class="view">
+    ${N.map(x=>`<div class="notif ${x[5]?'unread':''}"><div class="ni" style="background:${x[1]}">${icon(x[0],18)}</div>
+      <div style="flex:1"><b>${x[2]}</b><p>${x[3]}</p><small>${x[4]}</small></div></div>`).join('')}
+  </div>`;
+}
+
+/* ---------- PROFILE ---------- */
+function viewProfile(){
+  const menu=[['Data Diri','user','profil/Data Diri'],['Dokumen Digital','folder','profil/Dokumen Digital'],['Riwayat Transaksi','clock','cat/pajak'],['Notifikasi','bell','notif'],['Pengaturan','gear',''],['Bantuan','help','lainnya']];
+  return `<div class="view">
+    <div class="prof-hero">
+      <div class="pa">RA</div>
+      <h2>Rahmat Alamsyah</h2>
+      <p>6409xxxxxxxxxxxx · Kec. Penajam</p>
+      <div class="verified">${icon('check',14)} Akun Terverifikasi</div>
+    </div>
+    <div class="menu-list">
+      ${menu.map(m=>`<button class="menu-item" onclick="${m[2].startsWith('profil/')?`go('/svc/${m[2]}')`:m[2]==='notif'?"go('/notif')":m[2]?`go('/${m[2]}')`:"toast('Membuka pengaturan')"}">
+        <div class="mi">${icon(m[1],18)}</div><b>${m[0]}</b>${icon('chev',18)}</button>`).join('')}
+    </div>
+    <button class="btn btn-ghost" style="margin-top:16px" onclick="toast('Keluar dari akun')">Keluar</button>
+  </div>`;
+}
+
+/* ---------- BOTTOM NAV ---------- */
+function bottomNav(r){
+  const active=(id)=>{
+    if(id==='home') return r[0]==='home'||r[0]==='';
+    if(id==='cat-publik') return r[0]==='cat'&&r[1]==='publik'|| (r[0]==='svc'&&r[1]==='publik');
+    if(id==='cat-pajak') return (r[0]==='cat'&&r[1]==='pajak')||(r[0]==='svc'&&r[1]==='pajak');
+    if(id==='cat-informasi') return (r[0]==='cat'&&r[1]==='informasi')||(r[0]==='svc'&&r[1]==='informasi');
+    if(id==='profil') return r[0]==='profil-me';
+    return false;
+  };
+  return `
+    <button class="nav-item ${active('home')?'active':''}" onclick="go('/home')"><span class="ni">${icon('home',22)}</span>Beranda</button>
+    <button class="nav-item ${active('cat-publik')?'active':''}" onclick="go('/cat/publik')"><span class="ni">${icon('people',22)}</span>Layanan</button>
+    <div class="nav-center"><button onclick="go('/cari')">${icon('search',24)}</button></div>
+    <button class="nav-item ${active('cat-informasi')?'active':''}" onclick="go('/cat/informasi')"><span class="ni">${icon('info',22)}</span>Info</button>
+    <button class="nav-item ${active('profil')?'active':''}" onclick="go('/profil-me')"><span class="ni">${icon('user',22)}</span>Profil</button>`;
+}
+
+/* ---------- utils ---------- */
+function shade(color){
+  const map={'var(--c-admin)':'#1E3A8A','var(--c-publik)':'#14532D','var(--c-pajak)':'#9A3412','var(--c-info)':'#4C1D95','var(--c-smart)':'#155E75','var(--c-profil)':'#831843','var(--c-lain)':'#1E293B','#EF4444':'#991B1B','#3B82F6':'#1E3A8A','#60A5FA':'#1E40AF','#16A34A':'#14532D','#22C55E':'#166534','#15803D':'#14532D','#EA580C':'#9A3412','#F97316':'#9A3412','#FB923C':'#9A3412','#7C3AED':'#4C1D95','#0891B2':'#155E75','#DB2777':'#831843','#475569':'#1E293B'};
+  return map[color]||'#0A5248';
+}
+</script>
+</body>
+</html>
